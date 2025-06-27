@@ -58,7 +58,6 @@
 
   <audio id="background-audio" loop>
     <source src="./assets/piano-prayer-meditation-ambient-peaceful-music-364531.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
   </audio>
 
   <script>
@@ -91,15 +90,24 @@
     });
 
     // Music
-    musicBtn.addEventListener("click", () => {
-      if (audio.paused) {
-        audio.play();
-        musicBtn.textContent = "🔇 Mute";
-      } else {
-        audio.pause();
-        musicBtn.textContent = "🔊 Play";
-      }
-    });
+const music = document.getElementById("background-audio");
+const musicToggleBtn = document.getElementById("music-toggle");
+
+musicToggleBtn.addEventListener("click", () => {
+  if (music.paused) {
+    music.play()
+      .then(() => {
+        musicToggleBtn.textContent = "🔇";
+      })
+      .catch((err) => {
+        console.error("Music play blocked:", err);
+      });
+  } else {
+    music.pause();
+    musicToggleBtn.textContent = "🔊";
+  }
+});
+
 
     // Fetch Affirmation
     function fetchAffirmation() {

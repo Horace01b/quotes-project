@@ -85,6 +85,11 @@
       "id": "12ef",
       "type": "breathing",
       "timestamp": "2025-06-27T12:46:02.576Z"
+    },
+    {
+      "id": "4fa8",
+      "type": "meditation",
+      "timestamp": "2025-06-27T17:54:06.064Z"
     }
   ]
 }
