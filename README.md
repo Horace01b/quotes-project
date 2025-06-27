@@ -26,6 +26,10 @@
 -  **Light/Dark Mode Toggle**  
   Theme persistence with `localStorage`.
 
+## screenshot
+![image](https://github.com/user-attachments/assets/23094cd0-323b-4d94-9556-f6e56acd81b4)
+
+
 ---
 
 ## Tech Stack
