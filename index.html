@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💘️ Mindful Minutes</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:," />
+</head>
+<body>
+  <header class="top-bar">
+    <h1>💘️ Mindful Minutes</h1>
+    <div class="controls">
+      <label for="theme-toggle">☀️/🌙</label>
+      <input type="checkbox" id="theme-toggle" />
+      <button id="music-toggle">🔊</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="affirmation-section">
+      <h2>🌟 Daily Affirmation</h2>
+      <blockquote id="affirmation-text">Loading affirmation...</blockquote>
+    </section>
+
+    <section id="mood-section">
+      <h2>📅 Track Your Mood</h2>
+      <form id="mood-form">
+        <label for="mood-select">How do you feel today?</label>
+        <select id="mood-select" required>
+          <option value="">-- Select Mood --</option>
+          <option value="happy">😊 Happy</option>
+          <option value="sad">😢 Sad</option>
+          <option value="anxious">😟 Anxious</option>
+          <option value="calm">😌 Calm</option>
+          <option value="angry">😠 Angry</option>
+        </select>
+        <button type="submit">Save Mood</button>
+      </form>
+      <div id="mood-history">
+        <h3>🗓️ Mood This Week</h3>
+        <ul id="mood-list"></ul>
+      </div>
+    </section>
+
+    <section id="meditation-section">
+      <h2>🧘 1-Minute Meditation</h2>
+      <button id="start-meditation">Start</button>
+      <div id="meditation-timer" class="hidden">60</div>
+    </section>
+
+    <section id="breathing-section">
+      <h2>🌬️ Breathing Exercise</h2>
+      <button id="start-breathing">Start</button>
+      <p id="breathing-instructions"></p>
+    </section>
+  </main>
+
+  <audio id="background-audio" loop>
+    <source src="./assets/piano-prayer-meditation-ambient-peaceful-music-364531.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    const API_BASE = 'http://localhost:3001';
+
+    const affirmationText = document.getElementById("affirmation-text");
+    const moodSelect = document.getElementById("mood-select");
+    const moodList = document.getElementById("mood-list");
+    const meditateBtn = document.getElementById("start-meditation");
+    const meditationTimer = document.getElementById("meditation-timer");
+    const breatheBtn = document.getElementById("start-breathing");
+    const breathingInstructions = document.getElementById("breathing-instructions");
+    const musicBtn = document.getElementById("music-toggle");
+    const themeToggle = document.getElementById("theme-toggle");
+    const audio = document.getElementById("background-audio");
+
+    let meditationInterval;
+
+    // Theme
+    function applyTheme() {
+      const dark = localStorage.getItem("theme") === "dark";
+      document.body.classList.toggle("dark-mode", dark);
+      themeToggle.checked = dark;
+    }
+
+    themeToggle.addEventListener("change", () => {
+      const isDark = themeToggle.checked;
+      document.body.classList.toggle("dark-mode", isDark);
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    });
+
+    // Music
+    musicBtn.addEventListener("click", () => {
+      if (audio.paused) {
+        audio.play();
+        musicBtn.textContent = "🔇 Mute";
+      } else {
+        audio.pause();
+        musicBtn.textContent = "🔊 Play";
+      }
+    });
+
+    // Fetch Affirmation
+    function fetchAffirmation() {
+      fetch(`${API_BASE}/affirmations`)
+        .then(res => res.json())
+        .then(data => {
+          const rand = data[Math.floor(Math.random() * data.length)];
+          affirmationText.textContent = `"${rand.text}"`;
+        })
+        .catch(() => {
+          affirmationText.textContent = "You are worthy. You are enough.";
+        });
+    }
+
+    // Save Mood
+    document.getElementById("mood-form").addEventListener("submit", e => {
+      e.preventDefault();
+      const mood = moodSelect.value;
+      const entry = {
+        mood,
+        date: new Date().toISOString()
+      };
+      fetch(`${API_BASE}/moods`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(entry)
+      }).then(loadMoodHistory);
+      moodSelect.value = "";
+    });
+
+    function loadMoodHistory() {
+      fetch(`${API_BASE}/moods`)
+        .then(res => res.json())
+        .then(data => {
+          moodList.innerHTML = "";
+          const recent = data.slice(-7).reverse();
+          recent.forEach(entry => {
+            const li = document.createElement("li");
+            li.textContent = `${new Date(entry.date).toLocaleDateString()}: ${entry.mood}`;
+            moodList.appendChild(li);
+          });
+        });
+    }
+
+    // Meditation
+    meditateBtn.addEventListener("click", () => {
+      let seconds = 60;
+      meditationTimer.classList.remove("hidden");
+      meditationTimer.textContent = seconds;
+      meditateBtn.disabled = true;
+      meditationInterval = setInterval(() => {
+        seconds--;
+        meditationTimer.textContent = seconds;
+        if (seconds <= 0) {
+          clearInterval(meditationInterval);
+          meditateBtn.disabled = false;
+          meditationTimer.classList.add("hidden");
+          logSession("meditation");
+        }
+      }, 1000);
+    });
+
+    // Breathing
+    breatheBtn.addEventListener("click", () => {
+      const cycle = ["Breathe in", "Hold", "Breathe out", "Hold"];
+      let index = 0;
+      breathingInstructions.textContent = cycle[index];
+      const interval = setInterval(() => {
+        index = (index + 1) % cycle.length;
+        breathingInstructions.textContent = cycle[index];
+      }, 4000);
+      setTimeout(() => {
+        clearInterval(interval);
+        breathingInstructions.textContent = "Done!";
+        logSession("breathing");
+      }, 16000);
+    });
+
+    function logSession(type) {
+      const entry = {
+        type,
+        timestamp: new Date().toISOString()
+      };
+      fetch(`${API_BASE}/sessions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(entry)
+      });
+    }
+
+    // Init
+    document.addEventListener("DOMContentLoaded", () => {
+      applyTheme();
+      fetchAffirmation();
+      loadMoodHistory();
+    });
+  </script>
+</body>
+</html>

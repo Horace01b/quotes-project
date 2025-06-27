@@ -1,0 +1,186 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+/* THEME VARIABLES */
+:root {
+  --bg: #f0f8ff;
+  --text: #222;
+  --card-bg: #fff;
+  --accent: #009688;
+}
+
+.dark-mode {
+  --bg: #121212;
+  --text: #e0e0e0;
+  --card-bg: #1e1e1e;
+  --accent: #80cbc4;
+}
+
+/* HEADER */
+.top-bar {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+h1 {
+  font-size: 1.8rem;
+  color: var(--accent);
+}
+
+/* CONTAINER */
+.container {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 800px;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* SECTION STYLING */
+section {
+  padding: 1rem 0;
+}
+
+h2 {
+  font-size: 1.3rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+/* AFFIRMATIONS */
+#affirmation-text {
+  font-style: italic;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+/* BUTTONS */
+button {
+  padding: 0.7rem 1.2rem;
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background-color: #00796b;
+}
+
+.hidden {
+  display: none;
+}
+
+/* FORM INPUT */
+select,
+input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* MOOD HISTORY */
+#mood-history ul {
+  margin-top: 0.5rem;
+  list-style: none;
+  padding: 0;
+}
+
+#mood-history li {
+  background: var(--card-bg);
+  border-left: 5px solid var(--accent);
+  padding: 0.5rem;
+  margin-bottom: 0.3rem;
+  border-radius: 5px;
+}
+
+/* TIMER & BREATHING */
+#meditation-timer {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+#breathing-instructions {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  min-height: 2rem;
+}
+
+/* TOGGLES */
+.controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+#theme-toggle {
+  transform: scale(1.2);
+  margin-left: 0.5rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .top-bar,
+  .container {
+    padding: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  .controls {
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  #meditation-timer {
+    font-size: 1.5rem;
+  }
+
+  #breathing-instructions {
+    font-size: 1rem;
+  }
+}
