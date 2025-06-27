@@ -43,7 +43,7 @@
 
 ## Project Structure
 
-mindful-minutes/
+quotes-project/
 │
 ├index.html
 ├ css/
